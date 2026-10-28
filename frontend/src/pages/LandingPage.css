@@ -1,0 +1,876 @@
+
+:root {
+  --annora-green: #244c38;
+  --annora-green-dark: #193b2b;
+  --annora-green-light: #e8f0e7;
+  --annora-cream: #faf8f2;
+  --annora-peach: #f7e5d9;
+  --annora-yellow: #f5edc9;
+  --annora-text: #26372c;
+  --annora-muted: #69756b;
+  --annora-border: #e7e8df;
+}
+
+.annora-landing,
+.annora-login {
+  min-height: 100vh;
+  color: var(--annora-text);
+  font-family: Inter, "Segoe UI", Arial, sans-serif;
+}
+
+.annora-landing {
+  background: var(--annora-cream);
+}
+
+.annora-container {
+  width: min(1160px, calc(100% - 48px));
+  margin: 0 auto;
+}
+
+/* Logo */
+
+.annora-logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--annora-green);
+  text-decoration: none;
+}
+
+.annora-logo-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 15px;
+  background: var(--annora-green-light);
+}
+
+.annora-logo-text {
+  display: flex;
+  flex-direction: column;
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: 2px;
+}
+
+.annora-logo-text small {
+  margin-top: 3px;
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+}
+
+/* Header */
+
+.annora-header {
+  position: relative;
+  z-index: 10;
+  background: rgba(250, 248, 242, 0.96);
+  border-bottom: 1px solid var(--annora-border);
+}
+
+.annora-nav {
+  min-height: 86px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.annora-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 34px;
+}
+
+.annora-nav-links > a {
+  color: var(--annora-text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.annora-nav-links > a:hover {
+  color: #638b58;
+}
+
+.annora-nav-login,
+.annora-primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: none;
+  border-radius: 10px;
+  background: var(--annora-green);
+  color: white;
+  padding: 14px 21px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.2s;
+}
+
+.annora-nav-login:hover,
+.annora-primary-button:hover {
+  background: var(--annora-green-dark);
+  transform: translateY(-2px);
+}
+
+.annora-menu-button {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  color: var(--annora-green);
+  border: 1px solid var(--annora-border);
+  border-radius: 9px;
+  padding: 9px;
+  cursor: pointer;
+}
+
+/* Hero */
+
+.annora-hero {
+  padding: 82px 0 96px;
+  overflow: hidden;
+}
+
+.annora-hero-grid {
+  display: grid;
+  grid-template-columns: 1.02fr 0.98fr;
+  align-items: center;
+  gap: 70px;
+}
+
+.annora-hero-content {
+  max-width: 570px;
+}
+
+.annora-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #66875a;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.7px;
+}
+
+.annora-hero-content h1 {
+  margin: 24px 0 20px;
+  color: var(--annora-green-dark);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(43px, 5vw, 65px);
+  line-height: 1.09;
+  letter-spacing: -1.8px;
+}
+
+.annora-hero-content h1 span,
+.annora-login-message h1 span {
+  display: block;
+  color: #729365;
+  font-style: italic;
+}
+
+.annora-hero-content > p,
+.annora-how-content p {
+  max-width: 500px;
+  color: var(--annora-muted);
+  font-size: 16px;
+  line-height: 1.9;
+}
+
+.annora-hero-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.annora-secondary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 13px 18px;
+  border: 1px solid #d7ded2;
+  border-radius: 10px;
+  color: var(--annora-green);
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: background 0.2s;
+}
+
+.annora-secondary-button:hover {
+  background: var(--annora-green-light);
+}
+
+.annora-trust-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 23px;
+  margin-top: 35px;
+}
+
+.annora-trust-row span {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #586b5b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.annora-trust-row svg {
+  color: #789568;
+}
+
+/* Hero image */
+
+.annora-hero-visual {
+  position: relative;
+  padding: 10px 12px 20px 0;
+}
+
+.annora-hero-image {
+  position: relative;
+  overflow: hidden;
+  height: 450px;
+  border-radius: 190px 190px 22px 22px;
+  background: #e4e9dd;
+  box-shadow: 0 24px 60px rgba(38, 55, 44, 0.12);
+}
+
+.annora-hero-image > img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.annora-image-label {
+  position: absolute;
+  right: 18px;
+  bottom: 18px;
+  left: 18px;
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  padding: 17px;
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+}
+
+.annora-label-icon {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 43px;
+  height: 43px;
+  border-radius: 12px;
+  background: var(--annora-peach);
+  color: #a55d43;
+}
+
+.annora-image-label strong,
+.annora-image-label small {
+  display: block;
+}
+
+.annora-image-label strong {
+  color: var(--annora-green);
+  font-size: 13px;
+}
+
+.annora-image-label small {
+  margin-top: 5px;
+  color: var(--annora-muted);
+  font-size: 11px;
+}
+
+.annora-floating-leaf {
+  position: absolute;
+  top: 70px;
+  right: -18px;
+  display: grid;
+  place-items: center;
+  width: 66px;
+  height: 66px;
+  border: 6px solid var(--annora-cream);
+  border-radius: 50%;
+  background: #dfead7;
+  color: var(--annora-green);
+}
+
+/* Purpose and feature cards */
+
+.annora-impact {
+  padding: 86px 0 100px;
+  background: #fff;
+}
+
+.annora-section-heading {
+  max-width: 650px;
+  margin: 0 auto 48px;
+  text-align: center;
+}
+
+.annora-section-heading h2,
+.annora-how-content h2 {
+  margin: 17px 0;
+  color: var(--annora-green-dark);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(31px, 4vw, 43px);
+  line-height: 1.2;
+}
+
+.annora-section-heading p {
+  color: var(--annora-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+
+.annora-feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+}
+
+.annora-feature-card {
+  padding: 31px 27px;
+  border: 1px solid var(--annora-border);
+  border-radius: 17px;
+  background: #fff;
+  transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.annora-feature-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 15px 35px rgba(36, 76, 56, 0.08);
+}
+
+.annora-feature-icon {
+  display: grid;
+  place-items: center;
+  width: 55px;
+  height: 55px;
+  border-radius: 15px;
+}
+
+.annora-icon-green {
+  background: var(--annora-green-light);
+  color: var(--annora-green);
+}
+
+.annora-icon-peach {
+  background: var(--annora-peach);
+  color: #a55d43;
+}
+
+.annora-icon-yellow {
+  background: var(--annora-yellow);
+  color: #8b7134;
+}
+
+.annora-feature-card h3 {
+  margin: 24px 0 11px;
+  color: var(--annora-green-dark);
+  font-size: 19px;
+}
+
+.annora-feature-card p {
+  margin: 0;
+  color: var(--annora-muted);
+  font-size: 14px;
+  line-height: 1.85;
+}
+
+/* How it works */
+
+.annora-how {
+  padding: 67px 0;
+  background: #edf2e8;
+}
+
+.annora-how-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 35px;
+}
+
+.annora-how-content > div {
+  max-width: 670px;
+}
+
+.annora-how-content h2 {
+  margin-bottom: 12px;
+}
+
+.annora-how-content p {
+  margin-bottom: 0;
+}
+
+/* Footer */
+
+.annora-footer {
+  padding: 29px 0;
+  background: #fff;
+  border-top: 1px solid var(--annora-border);
+}
+
+.annora-footer-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.annora-footer-content > p,
+.annora-footer-content > span {
+  color: var(--annora-muted);
+  font-size: 12px;
+}
+
+/* Login screen */
+
+.annora-login {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: white;
+}
+
+.annora-login-left {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100vh;
+  padding: 35px clamp(28px, 5vw, 75px);
+  overflow: hidden;
+  background:
+    radial-gradient(ellipse at 5% 90%, #e1ebd8 0%, transparent 40%),
+    var(--annora-cream);
+}
+
+.annora-back-button {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: 6px;
+  padding: 9px 0;
+  border: none;
+  background: transparent;
+  color: var(--annora-green);
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.annora-login-brand {
+  margin-top: 35px;
+}
+
+.annora-login-message {
+  max-width: 500px;
+  padding: 50px 0;
+}
+
+.annora-login-message h1 {
+  margin: 23px 0 19px;
+  color: var(--annora-green-dark);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(36px, 4vw, 54px);
+  line-height: 1.15;
+}
+
+.annora-login-message > p {
+  color: var(--annora-muted);
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+.annora-login-points {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.annora-login-points span {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--annora-green);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.annora-login-bottom {
+  color: var(--annora-muted);
+  font-size: 12px;
+}
+
+.annora-login-right {
+  display: grid;
+  place-items: center;
+  padding: 45px 25px;
+}
+
+.annora-login-card {
+  width: 100%;
+  max-width: 420px;
+}
+
+.annora-mobile-logo {
+  display: none;
+  margin-bottom: 35px;
+}
+
+.annora-login-card > .annora-eyebrow {
+  font-size: 10px;
+}
+
+.annora-login-card h2 {
+  margin: 14px 0 8px;
+  color: var(--annora-green-dark);
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 38px;
+}
+
+.annora-login-subtitle {
+  margin: 0 0 30px;
+  color: var(--annora-muted);
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.annora-login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+
+.annora-login-form > label {
+  margin: 18px 0 9px;
+  color: var(--annora-text);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.annora-input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  min-height: 52px;
+  padding: 0 14px;
+  border: 1px solid #dfe4dc;
+  border-radius: 10px;
+  background: #fff;
+  color: #809080;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.annora-input-wrapper:focus-within {
+  border-color: #789568;
+  box-shadow: 0 0 0 3px rgba(120, 149, 104, 0.12);
+}
+
+.annora-input-wrapper > input {
+  width: 100%;
+  min-width: 0;
+  padding: 14px 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--annora-text);
+  font: inherit;
+  font-size: 13px;
+}
+
+.annora-input-wrapper > input::placeholder {
+  color: #a2aaa1;
+}
+
+.annora-password-toggle {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  padding: 5px;
+  border: none;
+  background: transparent;
+  color: #748274;
+  cursor: pointer;
+}
+
+.annora-login-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 19px 0 25px;
+}
+
+.annora-remember {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: var(--annora-muted);
+  font-size: 12px;
+}
+
+.annora-remember input {
+  accent-color: var(--annora-green);
+}
+
+.annora-text-button {
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #547b49;
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.annora-text-button:hover {
+  text-decoration: underline;
+}
+
+.annora-submit {
+  width: 100%;
+  min-height: 52px;
+}
+
+.annora-login-message-note {
+  margin: 14px 0 0;
+  padding: 12px;
+  border-radius: 9px;
+  background: var(--annora-green-light);
+  color: var(--annora-green-dark);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.annora-login-divider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 28px 0;
+  color: #9ba49a;
+  font-size: 11px;
+}
+
+.annora-login-divider::before,
+.annora-login-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: var(--annora-border);
+}
+
+.annora-login-footer {
+  color: var(--annora-muted);
+  text-align: center;
+  font-size: 13px;
+}
+
+/* Responsive design */
+
+@media (max-width: 900px) {
+  .annora-hero-grid {
+    gap: 35px;
+  }
+
+  .annora-hero {
+    padding: 60px 0 75px;
+  }
+
+  .annora-hero-image {
+    height: 380px;
+  }
+
+  .annora-login {
+    grid-template-columns: 0.85fr 1fr;
+  }
+
+  .annora-login-left {
+    padding: 28px;
+  }
+}
+
+@media (max-width: 700px) {
+  .annora-container {
+    width: calc(100% - 36px);
+  }
+
+  .annora-nav {
+    min-height: 74px;
+  }
+
+  .annora-logo-text {
+    font-size: 19px;
+  }
+
+  .annora-logo-icon {
+    width: 41px;
+    height: 41px;
+  }
+
+  .annora-menu-button {
+    display: inline-flex;
+  }
+
+  .annora-nav-links {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+    padding: 12px 20px 20px;
+    border-bottom: 1px solid var(--annora-border);
+    background: var(--annora-cream);
+    box-shadow: 0 12px 20px rgba(36, 76, 56, 0.06);
+  }
+
+  .annora-nav-links.is-open {
+    display: flex;
+  }
+
+  .annora-nav-links > a {
+    padding: 15px 4px;
+  }
+
+  .annora-nav-login {
+    margin-top: 8px;
+  }
+
+  .annora-hero {
+    padding: 48px 0 60px;
+  }
+
+  .annora-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 42px;
+  }
+
+  .annora-hero-content h1 {
+    font-size: clamp(42px, 11vw, 59px);
+  }
+
+  .annora-hero-content > p {
+    font-size: 14px;
+  }
+
+  .annora-hero-visual {
+    padding-right: 8px;
+  }
+
+  .annora-hero-image {
+    height: 370px;
+    border-radius: 160px 160px 20px 20px;
+  }
+
+  .annora-floating-leaf {
+    right: -6px;
+  }
+
+  .annora-impact {
+    padding: 65px 0;
+  }
+
+  .annora-section-heading {
+    margin-bottom: 32px;
+  }
+
+  .annora-feature-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .annora-feature-card {
+    padding: 25px;
+  }
+
+  .annora-how {
+    padding: 48px 0;
+  }
+
+  .annora-how-content {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 23px;
+  }
+
+  .annora-footer-content {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .annora-footer-content > p {
+    margin: 0;
+  }
+
+  .annora-login {
+    display: block;
+  }
+
+  .annora-login-left {
+    display: none;
+  }
+
+  .annora-login-right {
+    min-height: 100vh;
+    padding: 35px 22px;
+  }
+
+  .annora-login-card {
+    max-width: 440px;
+  }
+
+  .annora-mobile-logo {
+    display: block;
+  }
+
+  .annora-login-card h2 {
+    font-size: 34px;
+  }
+}
+
+@media (max-width: 380px) {
+  .annora-hero-actions {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .annora-hero-actions > * {
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .annora-trust-row {
+    gap: 12px;
+  }
+
+  .annora-hero-image {
+    height: 320px;
+  }
+
+  .annora-login-options {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
