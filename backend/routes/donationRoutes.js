@@ -1,7 +1,5 @@
 
 import express from "express";
-
-import express from "express";
 import mongoose from "mongoose";
 import Donation from "../models/Donation.js";
 import { createDonation } from "../controllers/DonationController.js";
@@ -31,7 +29,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// Create a donation using the main branch controller
+// Create a donation
 router.post("/", protect, createDonation);
 
 // NGO claims an available donation
@@ -96,8 +94,5 @@ router.patch("/:id/claim", protect, async (req, res) => {
 
 // Accept a matched donation request
 router.patch("/requests/:requestId/accept", protect, acceptDonation);
-
-export default router;
-
 
 export default router;

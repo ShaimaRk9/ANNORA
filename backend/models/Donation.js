@@ -3,12 +3,12 @@ import mongoose from "mongoose";
 
 const donationSchema = new mongoose.Schema(
   {
-
     donorName: {
       type: String,
       required: true,
       trim: true,
     },
+
     donor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -16,18 +16,18 @@ const donationSchema = new mongoose.Schema(
       index: true,
     },
 
-    },
     foodName: {
       type: String,
       required: true,
       trim: true,
-
     },
+
     foodType: {
       type: String,
       default: "Cooked Food",
       maxlength: 120,
     },
+
     foodCategory: {
       type: String,
       required: true,
@@ -41,30 +41,34 @@ const donationSchema = new mongoose.Schema(
         "Other",
       ],
     },
+
     description: {
       type: String,
-      required: true,
+      default: "",
       maxlength: 1500,
     },
 
     quantity: {
       type: Number,
       required: true,
-
       min: 0.1,
     },
+
     unit: {
       type: String,
       default: "portions",
     },
+
     quantityUnit: {
       type: String,
       required: true,
       enum: ["kg", "portions", "packets", "litres"],
     },
+
     preparedAt: {
       type: Date,
     },
+
     expiresAt: {
       type: Date,
       required: true,
@@ -74,30 +78,39 @@ const donationSchema = new mongoose.Schema(
       type: Date,
       required: true,
     },
-    description: {
-      type: String,
-      default: "",
-    },
+
     location: {
       type: {
         type: String,
         enum: ["Point"],
       },
       coordinates: {
-        type: [Number], // [longitude, latitude]
+        type: [Number],
       },
     },
+
     pickupWindowStart: {
       type: Date,
       required: true,
     },
+
     pickupWindowEnd: {
       type: Date,
       required: true,
     },
+
+    pickupAddress: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+
     dietaryTags: [String],
+
     allergenInfo: [String],
+
     imageUrls: [String],
+
     status: {
       type: String,
       enum: [
@@ -115,6 +128,7 @@ const donationSchema = new mongoose.Schema(
       default: "PENDING_MATCHING",
       index: true,
     },
+
     recommendedNGOs: [
       {
         ngo: {
@@ -126,19 +140,16 @@ const donationSchema = new mongoose.Schema(
         reasons: [String],
       },
     ],
+
+    // Basic references; verify these against your existing project
+    // before deploying if your application uses additional fields.
     assignedNGO: {
-      // Is field ki existing definition main branch wale code se preserve karo.
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      default: null,
     },
+
     claimedBy: {
-      // Is field ki existing definition feature/ngo-panel wale code se preserve karo.
-    },
-
-    },
-    pickupAddress: {
-      type: String,
-      required: true,
-    },
-
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
@@ -148,17 +159,19 @@ const donationSchema = new mongoose.Schema(
       type: Date,
       default: null,
     },
+
     acceptedAt: {
       type: Date,
     },
+
     completedAt: {
       type: Date,
     },
-
   },
   { timestamps: true }
 );
 
+// Database indexes
 donationSchema.index({ location: "2dsphere" });
 donationSchema.index({ donor: 1, createdAt: -1 });
 donationSchema.index({ status: 1, expiresAt: 1 });
@@ -166,8 +179,5 @@ donationSchema.index({ status: 1, expiresAt: 1 });
 const Donation =
   mongoose.models.Donation ||
   mongoose.model("Donation", donationSchema);
-
-module.exports = Donation;
-
 
 export default Donation;
