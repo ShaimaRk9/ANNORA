@@ -10,6 +10,8 @@ import {
 import { LandingPage, LoginPage } from "./pages/LandingPage";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 
+import NGODashboard from "./pages/ngo/NGODashboard";
+
 import DonorDashboard from "./pages/donor/DonorDashboard.jsx";
 import CreateDonation from "./pages/donor/CreateDonation.jsx";
 import MyDonations from "./pages/donor/MyDonations.jsx";
@@ -39,7 +41,12 @@ export default function App() {
   }
 
   if (page === "dashboard") {
-    return <AdminDashboard admin={admin} onLogout={handleLogout} />;
+    return (
+      <AdminDashboard
+        admin={admin}
+        onLogout={handleLogout}
+      />
+    );
   }
 
   if (page === "login") {
@@ -64,6 +71,11 @@ export default function App() {
         <Route
           path="/"
           element={<Navigate to="/donor/dashboard" replace />}
+        />
+
+        <Route
+          path="/ngo/dashboard"
+          element={<NGODashboard />}
         />
 
         <Route

@@ -3,16 +3,29 @@ import mongoose from "mongoose";
 
 const donationSchema = new mongoose.Schema(
   {
+
+    donorName: {
+      type: String,
+      required: true,
+      trim: true,
+    },
     donor: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
       index: true,
     },
+
+    },
     foodName: {
       type: String,
       required: true,
       trim: true,
+
+    },
+    foodType: {
+      type: String,
+      default: "Cooked Food",
       maxlength: 120,
     },
     foodCategory: {
@@ -33,24 +46,37 @@ const donationSchema = new mongoose.Schema(
       required: true,
       maxlength: 1500,
     },
+
     quantity: {
       type: Number,
       required: true,
+
       min: 0.1,
+    },
+    unit: {
+      type: String,
+      default: "portions",
     },
     quantityUnit: {
       type: String,
       required: true,
       enum: ["kg", "portions", "packets", "litres"],
     },
-    preparedAt: Date,
+    preparedAt: {
+      type: Date,
+    },
     expiresAt: {
       type: Date,
       required: true,
     },
-    pickupAddress: {
-      type: String,
+
+    expiryTime: {
+      type: Date,
       required: true,
+    },
+    description: {
+      type: String,
+      default: "",
     },
     location: {
       type: {
@@ -101,12 +127,34 @@ const donationSchema = new mongoose.Schema(
       },
     ],
     assignedNGO: {
+      // Is field ki existing definition main branch wale code se preserve karo.
+    },
+    claimedBy: {
+      // Is field ki existing definition feature/ngo-panel wale code se preserve karo.
+    },
+
+    },
+    pickupAddress: {
+      type: String,
+      required: true,
+    },
+
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       default: null,
     },
-    acceptedAt: Date,
-    completedAt: Date,
+
+    claimedAt: {
+      type: Date,
+      default: null,
+    },
+    acceptedAt: {
+      type: Date,
+    },
+    completedAt: {
+      type: Date,
+    },
+
   },
   { timestamps: true }
 );
@@ -118,5 +166,8 @@ donationSchema.index({ status: 1, expiresAt: 1 });
 const Donation =
   mongoose.models.Donation ||
   mongoose.model("Donation", donationSchema);
+
+module.exports = Donation;
+
 
 export default Donation;

@@ -7,7 +7,12 @@ import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 
 import connectDB from "./config/db.js";
+
+import donationRoutes from "./routes/donationRoutes.js";
+import matchingRoutes from "./routes/matchingRoutes.js";
+import requestRoutes from "./routes/requestRoutes.js";
 import User from "./models/User.js";
+
 
 import authRoutes from "./routes/authroutes.js";
 import donorRoutes from "./routes/donorRoutes.js";
@@ -32,6 +37,7 @@ app.use(
   })
 );
 
+
 const requiredEnv = [
   "JWT_SECRET",
   "ADMIN_USERNAME",
@@ -53,6 +59,18 @@ if (process.env.JWT_SECRET.length < 32) {
 
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
+
+// NGO panel routes
+app.use("/api/donations", donationRoutes);
+app.use("/api/matching", matchingRoutes);
+app.use("/api/requests", requestRoutes);
+
+app.get("/api/requests-test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Requests test route working",
+  });
+});
 
 const isProduction = process.env.NODE_ENV === "production";
 const ORGANIZATION_ROLES = ["RESTAURANT", "NGO"];
@@ -91,6 +109,7 @@ const adminSettingsSchema = new mongoose.Schema(
 const AdminSettings =
   mongoose.models.AdminSettings ||
   mongoose.model("AdminSettings", adminSettingsSchema);
+
 
 // Register API routes
 app.use("/api/auth", authRoutes);
