@@ -1,8 +1,15 @@
-
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema(
   {
+    username: {
+      type: String,
+      trim: true,
+      lowercase: true,
+      unique: true,
+      sparse: true,
+    },
+
     name: {
       type: String,
       required: true,
@@ -24,9 +31,19 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
+    // Keep both branches' role values for compatibility.
     role: {
       type: String,
-      enum: ["admin", "donor", "recipient"],
+      enum: [
+        "admin",
+        "donor",
+        "recipient",
+        "ADMIN",
+        "RESTAURANT",
+        "NGO",
+        "RECEIVER",
+        "VOLUNTEER",
+      ],
       required: true,
       default: "donor",
       index: true,
@@ -63,7 +80,7 @@ const userSchema = new mongoose.Schema(
       default: "",
     },
 
-    // Account verification
+    // Donor account verification
     isVerified: {
       type: Boolean,
       default: false,
@@ -73,6 +90,24 @@ const userSchema = new mongoose.Schema(
       type: String,
       enum: ["pending", "active", "suspended"],
       default: "pending",
+    },
+
+    // Main branch verification fields
+    verificationStatus: {
+      type: String,
+      enum: ["PENDING", "APPROVED", "REJECTED"],
+      default: "PENDING",
+    },
+
+    registrationNumber: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    rejectionReason: {
+      type: String,
+      default: "",
     },
 
     // Donor notification preferences
@@ -103,6 +138,7 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+// Reuse the existing model if already registered.
 const User =
   mongoose.models.User || mongoose.model("User", userSchema);
 
