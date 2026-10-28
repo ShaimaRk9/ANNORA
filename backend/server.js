@@ -1,13 +1,36 @@
 import "dotenv/config";
-import bcrypt from "bcryptjs";
-import User from "./models/User.js";
 import express from "express";
 import cors from "cors";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 import mongoose from "mongoose";
 
+import connectDB from "./config/db.js";
+import User from "./models/User.js";
+
+import authRoutes from "./routes/authroutes.js";
+import donorRoutes from "./routes/donorRoutes.js";
+// import recipientRoutes from "./routes/recipientRoutes.js";
+// import adminRoutes from "./routes/adminRoutes.js";
+import donationRoutes from "./routes/donationRoutes.js";
+import pickupRoutes from "./routes/pickupRoutes.js";
+
 const app = express();
+
+app.use(
+  cors({
+    origin: process.env.FRONTEND_URL
+      ? process.env.FRONTEND_URL.split(",").map((url) => url.trim())
+      : [
+          "http://localhost:5173",
+          "http://localhost:5174",
+          "http://127.0.0.1:5173",
+          "http://127.0.0.1:5174",
+        ],
+    credentials: true,
+  })
+);
 
 const requiredEnv = [
   "JWT_SECRET",
@@ -28,14 +51,6 @@ if (process.env.JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be at least 32 characters.");
 }
 
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  "http://127.0.0.1:5173",
-  "http://127.0.0.1:5174",
-];
-
-app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(express.json({ limit: "1mb" }));
 app.use(cookieParser());
 
@@ -48,10 +63,27 @@ const VERIFICATION_STATUSES = ["PENDING", "APPROVED", "REJECTED"];
 
 const adminSettingsSchema = new mongoose.Schema(
   {
-    username: { type: String, required: true, unique: true, trim: true },
-    email: { type: String, required: true, lowercase: true, trim: true },
-    name: { type: String, required: true, trim: true },
-    passwordHash: { type: String, required: true },
+    username: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true,
+    },
+    email: {
+      type: String,
+      required: true,
+      lowercase: true,
+      trim: true,
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+    },
+    passwordHash: {
+      type: String,
+      required: true,
+    },
   },
   { timestamps: true }
 );
@@ -60,251 +92,21 @@ const AdminSettings =
   mongoose.models.AdminSettings ||
   mongoose.model("AdminSettings", adminSettingsSchema);
 
-// -------------------- FOOD SAFETY REVIEW MODEL --------------------
+// Register API routes
+app.use("/api/auth", authRoutes);
+app.use("/api/donor", donorRoutes);
+// app.use("/api/recipient", recipientRoutes);
+// app.use("/api/admin", adminRoutes);
+app.use("/api/donations", donationRoutes);
+app.use("/api/pickups", pickupRoutes);
 
-const safetyReviewSchema = new mongoose.Schema(
-  {
-    title: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 120,
-    },
-    organization: { type: String, trim: true, default: "" },
-    details: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 2000,
-    },
-    status: {
-      type: String,
-      enum: ["OPEN", "IN_REVIEW", "RESOLVED"],
-      default: "OPEN",
-    },
-    notes: { type: String, trim: true, default: "", maxlength: 2000 },
-    createdBy: { type: String, default: "Admin" },
-  },
-  { timestamps: true }
-);
-
-const SafetyReview =
-  mongoose.models.SafetyReview ||
-  mongoose.model("SafetyReview", safetyReviewSchema);
-
-// -------------------- ADMIN HELPERS --------------------
-
-async function getAdminSettings() {
-  let settings = await AdminSettings.findOne();
-
-  if (!settings) {
-    settings = await AdminSettings.create({
-      username: process.env.ADMIN_USERNAME,
-      email: process.env.ADMIN_EMAIL,
-      name: process.env.ADMIN_NAME,
-      passwordHash: await bcrypt.hash(process.env.ADMIN_PASSWORD, 12),
-    });
-  }
-
-  return settings;
-}
-
-function createAdminToken(settings) {
-  return jwt.sign(
-    {
-      role: "admin",
-      email: settings.email,
-      name: settings.name,
-    },
-    process.env.JWT_SECRET,
-    { expiresIn: "2h" }
-  );
-}
-
-function requireAdmin(req, res, next) {
-  const token = req.cookies.annora_admin;
-
-  if (!token) {
-    return res.status(401).json({
-      message: "Please log in as admin.",
-    });
-  }
-
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    if (decoded.role !== "admin") {
-      return res.status(403).json({
-        message: "Admin access required.",
-      });
-    }
-
-    req.admin = decoded;
-    next();
-  } catch {
-    return res.status(401).json({
-      message: "Session expired. Log in again.",
-    });
-  }
-}
-
-// -------------------- SIGNUP --------------------
-
-app.post("/api/auth/signup", async (req, res) => {
-  try {
-    const { name, email, password, role, registrationNumber } =
-      req.body || {};
-
-    if (
-      typeof name !== "string" ||
-      !name.trim() ||
-      typeof email !== "string" ||
-      !email.trim() ||
-      typeof password !== "string" ||
-      password.length < 8
-    ) {
-      return res.status(400).json({
-        message:
-          "Name, valid email and password (minimum 8 characters) are required.",
-      });
-    }
-
-    if (!ORGANIZATION_ROLES.includes(role)) {
-      return res.status(400).json({
-        message: "Please select Donor or NGO.",
-      });
-    }
-
-    const normalizedEmail = email.trim().toLowerCase();
-
-    const existingUser = await User.findOne({
-      email: normalizedEmail,
-    });
-
-    if (existingUser) {
-      return res.status(409).json({
-        message: "An account with this email already exists.",
-      });
-    }
-
-    const user = await User.create({
-      name: name.trim(),
-      email: normalizedEmail,
-      password: await bcrypt.hash(password, 12),
-      role,
-      registrationNumber:
-        typeof registrationNumber === "string"
-          ? registrationNumber.trim()
-          : "",
-      verificationStatus: "PENDING",
-    });
-
-    return res.status(201).json({
-      message: "Registration submitted! Please wait for admin approval.",
-      user: {
-        id: user._id,
-        name: user.name,
-        email: user.email,
-        role: user.role,
-        verificationStatus: user.verificationStatus,
-      },
-    });
-  } catch (error) {
-    if (error.code === 11000) {
-      return res.status(409).json({
-        message: "This email is already registered.",
-      });
-    }
-
-    console.error("Signup error:", error.message);
-
-    return res.status(500).json({
-      message: "Registration failed. Please try again.",
-    });
-  }
-});
-
-// -------------------- ADMIN LOGIN --------------------
-
-app.post("/api/admin/login", async (req, res) => {
-  try {
-    const { username, password } = req.body || {};
-
-    if (
-      typeof username !== "string" ||
-      typeof password !== "string"
-    ) {
-      return res.status(401).json({
-        message: "Invalid admin username or password.",
-      });
-    }
-
-    const settings = await getAdminSettings();
-
-    if (
-      username !== settings.username ||
-      !(await bcrypt.compare(password, settings.passwordHash))
-    ) {
-      return res.status(401).json({
-        message: "Invalid admin username or password.",
-      });
-    }
-
-    res.cookie("annora_admin", createAdminToken(settings), {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: "lax",
-      path: "/",
-      maxAge: 2 * 60 * 60 * 1000,
-    });
-
-    return res.json({
-      message: "Admin login successful.",
-      admin: {
-        name: settings.name,
-        email: settings.email,
-        role: "admin",
-      },
-    });
-  } catch (error) {
-    console.error("Admin login error:", error.message);
-
-    return res.status(500).json({
-      message: "Unable to log in. Please try again.",
-    });
-  }
-});
-
-// -------------------- ADMIN SESSION --------------------
-
-app.get("/api/admin/me", requireAdmin, async (req, res) => {
-  try {
-    const settings = await getAdminSettings();
-
-    return res.json({
-      admin: {
-        name: settings.name,
-        email: settings.email,
-        username: settings.username,
-        role: "admin",
-      },
-    });
-  } catch {
-    return res.status(500).json({
-      message: "Could not load admin profile.",
-    });
-  }
-});
-
-// -------------------- LOGOUT --------------------
-
-app.post("/api/admin/logout", (req, res) => {
-  res.clearCookie("annora_admin", {
-    httpOnly: true,
-    secure: isProduction,
-    sameSite: "lax",
-    path: "/",
+// Health-check routes
+app.get("/", (req, res) => {
+  res.json({
+    success: true,
+    message: "Welcome to ANNORA Backend API",
   });
+});
 
   res.json({ message: "Logged out successfully." });
 });
@@ -695,17 +497,19 @@ app.patch("/api/admin/settings", requireAdmin, async (req, res) => {
 
 app.get("/", (req, res) => {
   res.json({
-    message: "ANNORA API is running.",
+    success: true,
+    message: "ANNORA backend is running",
     database:
-      mongoose.connection.readyState === 1 ? "connected" : "disconnected",
+      mongoose.connection.readyState === 1
+        ? "connected"
+        : "disconnected",
   });
 });
 
-// -------------------- START SERVER --------------------
-
+// Start the server after connecting to MongoDB
 const port = Number(process.env.PORT) || 5000;
 
-async function startServer() {
+const startServer = async () => {
   try {
     await mongoose.connect(process.env.MONGODB_URI);
 
@@ -715,7 +519,10 @@ async function startServer() {
       console.log(`ANNORA backend running on http://localhost:${port}`);
     });
   } catch (error) {
-    console.error("Database connection failed:", error.message);
+    console.error("Failed to start ANNORA:", error.message);
+    process.exit(1);
+  }
+};
     process.exit(1);
   }
 }

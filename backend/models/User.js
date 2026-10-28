@@ -22,6 +22,7 @@ const userSchema = new mongoose.Schema(
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
 
     password: {
@@ -30,13 +31,68 @@ const userSchema = new mongoose.Schema(
       select: false,
     },
 
+    // Keep both branches' role values for compatibility.
     role: {
       type: String,
-      enum: ["ADMIN", "RESTAURANT", "NGO", "RECEIVER", "VOLUNTEER"],
+      enum: [
+        "admin",
+        "donor",
+        "recipient",
+        "ADMIN",
+        "RESTAURANT",
+        "NGO",
+        "RECEIVER",
+        "VOLUNTEER",
+      ],
       required: true,
-      default: "RECEIVER",
+      default: "donor",
+      index: true,
     },
 
+    // Donor business profile
+    businessName: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    businessType: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    phone: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    address: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    description: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
+    // Donor account verification
+    isVerified: {
+      type: Boolean,
+      default: false,
+    },
+
+    accountStatus: {
+      type: String,
+      enum: ["pending", "active", "suspended"],
+      default: "pending",
+    },
+
+    // Main branch verification fields
     verificationStatus: {
       type: String,
       enum: ["PENDING", "APPROVED", "REJECTED"],
@@ -53,12 +109,37 @@ const userSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+
+    // Donor notification preferences
+    settings: {
+      emailNotifications: {
+        type: Boolean,
+        default: true,
+      },
+
+      smsNotifications: {
+        type: Boolean,
+        default: false,
+      },
+
+      pushNotifications: {
+        type: Boolean,
+        default: true,
+      },
+
+      language: {
+        type: String,
+        default: "en",
+      },
+    },
   },
   {
     timestamps: true,
   }
 );
 
-const User = mongoose.model("User", userSchema);
+// Reuse the existing model if already registered.
+const User =
+  mongoose.models.User || mongoose.model("User", userSchema);
 
 export default User;
