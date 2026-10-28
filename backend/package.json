@@ -1,21 +1,25 @@
-
 {
-  "name": "ANNORA-backend",
+  "name": "annora-backend",
   "version": "1.0.0",
-  "description": "ANNORA backend API",
+  "description": "ANNORA FoodBridge backend API",
   "type": "module",
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "dev": "nodemon server.js"
+    "dev": "nodemon server.js",
+    "create-admin": "node scripts/createAdmin.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cookie-parser": "^1.4.7",
     "cors": "^2.8.6",
     "dotenv": "^18.0.9",
     "express": "^5.3.0",
+    "express-rate-limit": "^8.7.1",
+    "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.11.4"
   },
   "devDependencies": {

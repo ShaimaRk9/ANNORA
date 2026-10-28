@@ -1,5 +1,10 @@
 
-const normalize = (value) => String(value || "").trim().toLowerCase();
+import User from "../models/User.js";
+
+const MAX_RESULTS = 5;
+
+const normalize = (value) =>
+  String(value || "").trim().toLowerCase();
 
 // Calculate how well a donation matches an NGO request
 export function calculateMatchScore(donation, request) {
@@ -113,7 +118,7 @@ export function calculateMatchScore(donation, request) {
   score += 20;
   reasons.push("Pickup deadline is before food expiry");
 
-  // 5. Urgency bonus for food expiring soon
+  // 5. Urgency bonus
   const hoursUntilExpiry = (expiry - now) / (1000 * 60 * 60);
 
   if (hoursUntilExpiry <= 6) {
@@ -131,7 +136,7 @@ export function calculateMatchScore(donation, request) {
   };
 }
 
-// Generate recommendations between available donations and open requests
+// Generate recommendations between donations and open requests
 export function getRecommendations(donations, requests) {
   const recommendations = [];
 
@@ -154,6 +159,36 @@ export function getRecommendations(donations, requests) {
     }
   }
 
-  // Show the highest-scoring matches first
   return recommendations.sort((a, b) => b.score - a.score);
+}
+
+// Find verified recipient accounts for a donation
+export async function findMatchingNGOs(donation) {
+  if (
+    !donation.location?.coordinates ||
+    donation.location.coordinates.length !== 2
+  ) {
+    throw new Error("Donation must have valid location coordinates");
+  }
+
+  const recipients = await User.find({
+    role: "recipient",
+    isVerified: true,
+    accountStatus: "active",
+  })
+    .select("_id name address")
+    .lean();
+
+  const matches = recipients.map((recipient) => ({
+    ngoId: recipient._id,
+    name: recipient.name,
+    distanceKm: null,
+    score: 0,
+    reasons: [
+      "Verified active recipient account",
+      "Distance matching is unavailable until recipient location data is added",
+    ],
+  }));
+
+  return matches.slice(0, MAX_RESULTS);
 }

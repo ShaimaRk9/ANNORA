@@ -1,16 +1,14 @@
 
 import mongoose from "mongoose";
 
+// NGO's food requirements
 const requestSchema = new mongoose.Schema(
   {
-    // NGO or recipient details
     ngoName: {
       type: String,
       required: true,
       trim: true,
     },
-
-    // Food types accepted by this NGO
     acceptedFoodTypes: {
       type: [String],
       required: true,
@@ -19,62 +17,90 @@ const requestSchema = new mongoose.Schema(
         message: "At least one accepted food type is required",
       },
     },
-
-    // Dietary preference of the recipients
     dietaryPreference: {
       type: String,
       enum: ["Any", "Vegetarian", "Vegan", "Non-Vegetarian"],
       default: "Any",
     },
-
-    // Quantity required by the NGO
     requiredQuantity: {
       type: Number,
       required: true,
       min: 1,
     },
-
     unit: {
       type: String,
       default: "portions",
       trim: true,
     },
-
-    // Where the NGO can collect food
     pickupAddress: {
       type: String,
       required: true,
       trim: true,
     },
-
-    // Optional coordinates for distance matching
     latitude: {
       type: Number,
       default: null,
     },
-
     longitude: {
       type: Number,
       default: null,
     },
-
-    // Latest time the NGO can collect the food
     pickupDeadline: {
       type: Date,
       required: true,
     },
-
     status: {
       type: String,
       enum: ["Open", "Matched", "Fulfilled", "Cancelled"],
       default: "Open",
     },
   },
-  {
-    timestamps: true,
-  }
+  { timestamps: true }
 );
 
-const Request = mongoose.model("Request", requestSchema);
+// Request sent to a specific NGO for a donation
+const donationRequestSchema = new mongoose.Schema(
+  {
+    donation: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Donation",
+      required: true,
+      index: true,
+    },
+    ngo: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true,
+      index: true,
+    },
+    matchScore: {
+      type: Number,
+      min: 0,
+      max: 100,
+    },
+    distanceKm: Number,
+    status: {
+      type: String,
+      enum: ["OPEN", "ACCEPTED", "CLOSED", "REJECTED", "EXPIRED"],
+      default: "OPEN",
+    },
+    respondedAt: Date,
+  },
+  { timestamps: true }
+);
 
+donationRequestSchema.index(
+  { donation: 1, ngo: 1 },
+  { unique: true }
+);
+
+const Request =
+  mongoose.models.Request ||
+  mongoose.model("Request", requestSchema);
+
+const DonationRequest =
+  mongoose.models.DonationRequest ||
+  mongoose.model("DonationRequest", donationRequestSchema);
+
+export { DonationRequest };
 export default Request;
