@@ -2,6 +2,9 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import connectDB from "./config/db.js";
+import donationRoutes from "./routes/donationRoutes.js";
+import matchingRoutes from "./routes/matchingRoutes.js";
+import requestRoutes from "./routes/requestRoutes.js";
 
 dotenv.config();
 
@@ -15,6 +18,16 @@ app.use(
 );
 
 app.use(express.json());
+app.use("/api/donations", donationRoutes);
+app.use("/api/matching", matchingRoutes);
+app.use("/api/requests", requestRoutes);
+
+app.get("/api/requests-test", (req, res) => {
+  res.json({
+    success: true,
+    message: "Requests test route working",
+  });
+});
 
 app.get("/", (req, res) => {
   res.json({
